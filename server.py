@@ -1,5 +1,4 @@
-
- #!/usr/bin/python
+#!/usr/bin/python
 
 """
 Save this file as server.py
@@ -14,47 +13,43 @@ Serving on localhost:8000
 You can use this to test GET and POST methods.
 
 """
-
 import SimpleHTTPServer
 import SocketServer
-import logging
+import time
 import cgi
 
-import sys
 import urlparse
-import unicodedata
-
-if len(sys.argv) > 2:
-    PORT = int(sys.argv[2])
-    I = sys.argv[1]
-elif len(sys.argv) > 1:
-    PORT = int(sys.argv[1])
-    I = ""
-else:
-    PORT = 8000
-    I = ""
 
 
 class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
-
-    def do_POST(s):
+    def do_POST(self):
         """Respond to a POST request."""
+        form = cgi.FieldStorage(
+            fp=self.rfile,
+            headers=self.headers,
+            environ={'REQUEST_METHOD': 'POST',
+                     'CONTENT_TYPE': self.headers['Content-Type'],
+                     })
 
-        # Extract and print the contents of the POST
-        length = int(s.headers['Content-Length'])
-        post_data = urlparse.parse_qs(s.rfile.read(length).decode('utf-8'))
-        
-        s.send_header("Content-type", "text/html")
-        print post_data["word"][0].encode('ascii', 'ignore')
+        print("======= POST VALUES =======")
+        print form['message'].value
+        for item in form.list:
+            print(item)
+        print("\n")
 
-        s.end_headers()
-        s.wfile.write("Thanks in body" + "\n")
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+
+        time.sleep(5)
+        self.wfile.write("Thanks in body" + "\n")
+
 
 Handler = ServerHandler
 
-httpd = SocketServer.TCPServer(("", PORT), Handler)
+INTERFACE = ""
+PORT = 8000
+httpd = SocketServer.TCPServer((INTERFACE, PORT), Handler)
 httpd.allow_reuse_address = True
 
-print "@rochacbruno Python http server version 0.1 (for testing purposes only)"
-print "Serving at: http://%(interface)s:%(port)s" % dict(interface=I or "localhost", port=PORT)
+print "Serving at: http://%(interface)s:%(port)s" % dict(interface=INTERFACE or "localhost", port=PORT)
 httpd.serve_forever()
