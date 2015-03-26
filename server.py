@@ -33,9 +33,9 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         print("======= POST VALUES =======")
         print form['message'].value
-        for item in form.list:
-            print(item)
-        print("\n")
+        # for item in form.list:
+        #     print(item)
+        # print("\n")
 
         self.send_header("Content-type", "text/html")
         self.end_headers()

@@ -54,9 +54,9 @@ class Control():
 				return self.translate()
 				
 
-	def translate(self):
+	def translate(self,words):
 		#Split the input into its pieces
-		lis = self.input.split()
+		lis = words.split()
 
 		#Check the input to make sure that it's vaid
 		success = self.checkInput(lis)
