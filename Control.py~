@@ -1,5 +1,7 @@
 from Speech import Speech
+import speech_recognition as sr
 import SoundTest
+
 
 class Control():
 	def __init__(self):

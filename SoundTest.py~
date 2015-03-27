@@ -1,4 +1,18 @@
+import speech_recognition as sr
 from subprocess import call
+
+
+def listen():
+    call(["amixer", "set", "Capture", "70"])
+    call(["arecord", '-f', 'dat', '-c', '1', '-D', 'hw:0,0', '-d', '5', '-V', 'mono', 'test.wav'])
+    r = sr.Recognizer(language = "en-US", key = "AIzaSyB5HMzhJDY9iKLLku6_gQRGleTmFgiq4Ec")
+    
+    with sr.WavFile("test.wav") as source:              # use "test.wav" as the audio source
+        audio = r.record(source)                        # extract audio data from the file
+    try:
+        return r.recognize(audio)
+    except:
+        return None
 
 def recognize():
 
